@@ -63,8 +63,21 @@ if errorlevel 1 goto EXAMPLE
 :PRACTICE
 echo.
 echo Starting mdbook for rust-by-practice...
+
+REM ====================================================
+REM 5. Ask user for host type
+REM ====================================================
+echo.
+echo Choose where to bind the mdbook server:
+echo [L]ocalhost (127.0.0.1) - Only accessible from this computer
+echo [A]ll Interfaces (0.0.0.0) - Accessible from other devices on the network
+choice /C LA /M "Enter your choice:"
+
+set HOST=127.0.0.1
+if errorlevel 2 set HOST=0.0.0.0
+
 cd /d "%~dp0\rust-by-practice"
-start cmd /c "mdbook serve en"
+start cmd /c "mdbook serve en --hostname %HOST%"
 timeout /t 3 >nul
 start http://127.0.0.1:3000
 goto END
@@ -72,9 +85,20 @@ goto END
 :EXAMPLE
 echo.
 echo Building and serving rust-by-example...
+
+REM Ask for the host type again
+echo.
+echo Choose where to bind the mdbook server:
+echo [L]ocalhost (127.0.0.1) - Only accessible from this computer
+echo [A]ll Interfaces (0.0.0.0) - Accessible from other devices on the network
+choice /C LA /M "Enter your choice:"
+
+set HOST=127.0.0.1
+if errorlevel 2 set HOST=0.0.0.0
+
 cd /d "%~dp0\rust-by-example"
 mdbook build
-start cmd /c "mdbook serve"
+start cmd /c "mdbook serve --hostname %HOST%"
 timeout /t 3 >nul
 start http://127.0.0.1:3000
 goto END
